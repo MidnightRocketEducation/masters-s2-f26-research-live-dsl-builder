@@ -1,0 +1,21 @@
+{
+  "name": "dsl",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "antlr": "node scripts/antlr.js -Dlanguage=JavaScript -visitor -o src/generated grammar/EBNF.g4"
+  },
+  "dependencies": {
+    "antlr4": "^4.13.1",
+    "d3": "^7.9.0",
+    "monaco-editor": "^0.48.0",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "vite": "^7.3.1"
+  }
+}

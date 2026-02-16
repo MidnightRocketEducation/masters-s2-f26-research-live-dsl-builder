@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EBNF Live Parse Tree</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <div>
+          <h1>EBNF Live Parse Tree</h1>
+          <p>Type EBNF on the left. Click nodes on the right to highlight source.</p>
+        </div>
+        <div class="header-actions">
+          <label class="toggle">
+            <input id="toggle-compact" type="checkbox" checked />
+            <span>Compact tree</span>
+          </label>
+          <div id="status" class="status">Ready</div>
+        </div>
+      </header>
+      <main class="panes">
+        <section class="pane">
+          <div id="editor" class="editor"></div>
+        </section>
+        <section class="pane">
+          <svg id="tree" class="tree"></svg>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
