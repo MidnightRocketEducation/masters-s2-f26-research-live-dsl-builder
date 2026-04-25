@@ -3,7 +3,6 @@ name: Deploy React App to GitHub Pages
 on:
   release:
     types: [published]  # Trigger the workflow when a new release is published
-  workflow_dispatch:
 
 permissions:
   contents: read
