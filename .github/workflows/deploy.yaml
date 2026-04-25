@@ -7,6 +7,7 @@ on:
 
 permissions:
   pages: write
+  id-token: write
 
 jobs:
   # Build job
@@ -19,10 +20,21 @@ jobs:
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
-
+        with:
+          node-version: 25
+          cache-dependency-path: live-dsl/package-lock.json
+      - name: Debug
+        working-directory: live-dsl
+        run: |
+          node --version
+          npm --version
+          ls -lha
+          pwd
+          git show -s
       - name: Install dependencies
         working-directory: live-dsl
-        run: npm install
+        run: |
+          npm install || { ls -lha "$HOME/.npm/_logs" && cat $HOME/.npm/_logs/*.log && exit 1; }
 
       - name: Build static files
         id: build
