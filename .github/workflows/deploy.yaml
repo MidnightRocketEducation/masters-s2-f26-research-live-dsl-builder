@@ -1,13 +1,8 @@
 name: Deploy React App to GitHub Pages
 
 on:
-  push:
-    branches:
-      - '*'
-
-permissions:
-  pages: write
-  id-token: write
+  release:
+    types: [released]
 
 jobs:
   # Build job
@@ -24,12 +19,9 @@ jobs:
           node-version: 25
           cache-dependency-path: live-dsl/package-lock.json
       - name: Debug
-        working-directory: live-dsl
         run: |
           node --version
           npm --version
-          ls -lha
-          pwd
           git show -s
       - name: Install dependencies
         working-directory: live-dsl
@@ -49,6 +41,10 @@ jobs:
 
   # Deployment job
   deploy:
+    permissions:
+      pages: write
+      id-token: write
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
