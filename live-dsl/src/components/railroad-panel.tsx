@@ -4,7 +4,7 @@ import { grammarToRailroad, wireRailroadInteractions } from "@/grammar/visualiza
 import type * as monaco from "monaco-editor"
 
 export function RailroadPanel() {
-  const parseResult = useAppStore(s => s.parseResult)
+  const noErrorParseResult = useAppStore(s => s.noErrorParseResult)
   const ebnfEditor  = useAppStore(s => s.ebnfEditor)
 
   // Keep editor in a ref so ref callbacks can always access the latest value
@@ -15,13 +15,13 @@ export function RailroadPanel() {
   const cleanupRefs = useRef<Map<string, () => void>>(new Map())
 
   const diagrams = useMemo(() => {
-    if (!parseResult?.ast) return []
+    if (!noErrorParseResult?.ast) return []
     try {
-      return grammarToRailroad(parseResult.ast)
+      return grammarToRailroad(noErrorParseResult.ast)
     } catch {
       return []
     }
-  }, [parseResult?.ast])
+  }, [noErrorParseResult?.ast])
 
   // Clean up all listeners on unmount
   useEffect(() => {
@@ -53,9 +53,7 @@ export function RailroadPanel() {
   if (diagrams.length === 0) {
     return (
       <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-        {parseResult && parseResult.errors.length > 0
-          ? "Fix grammar errors to see diagrams"
-          : "Start writing a grammar to see railroad diagrams"}
+        {"Write a grammar in the EBNF editor to see railroad diagrams"}
       </div>
     )
   }

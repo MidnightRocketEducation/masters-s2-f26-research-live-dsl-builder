@@ -7,6 +7,7 @@ import { RailroadPanel } from '@/components/railroad-panel'
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from '@/components/ui/resizable'
 import { ParseTreePanel } from './components/parse-tree-panel'
 import { ReferencePanel } from './components/reference-panel'
+import { ErrorOverlayPanel } from './components/error-overlay-panel'
 
 function App() {
   const {
@@ -14,6 +15,9 @@ function App() {
     showSecondEditorPanel,
     showParseTreePanel,
     showRailroadPanel,
+    isParseResultMatching,
+    setParseResultMismatchOverlay,
+    showParseResultMismatchOverlay,
   } = useAppStore()
 
   const showRightPanel = showSecondEditorPanel || showParseTreePanel || showRailroadPanel
@@ -26,41 +30,40 @@ function App() {
           <ResizablePanel minSize={200}>
             <ResizablePanelGroup orientation="horizontal" className="flex-1">
               <ResizablePanel minSize={300}>
-                <EBNFEditor/>
+                <EBNFEditor />
               </ResizablePanel>
-
               {showRightPanel && (
                 <>
                   <ResizableHandle withHandle className="z-10" />
                   <ResizablePanel minSize={350}>
-                    <ResizablePanelGroup orientation="vertical" className="flex-1">
+                    <ErrorOverlayPanel label="Grammar mismatch" visible={!isParseResultMatching && showParseResultMismatchOverlay} onDismiss={() => setParseResultMismatchOverlay(false)}>
+                      <ResizablePanelGroup orientation="vertical" className="flex-1">
+                        {showSecondEditorPanel && (
+                          <>
+                            <ResizablePanel minSize={100}>
+                              <DSLEditorPanel />
+                            </ResizablePanel>
+                            <ResizableHandle />
+                          </>
+                        )}
 
-                      {showSecondEditorPanel && (
-                        <>
+                        {showParseTreePanel && (
+                          <>
+                            <ResizablePanel minSize={100}>
+                              {/* ParseTreePanel - not yet implemented */}
+                              <ParseTreePanel />
+                            </ResizablePanel>
+                            <ResizableHandle />
+                          </>
+                        )}
+
+                        {showRailroadPanel && (
                           <ResizablePanel minSize={100}>
-                            <DSLEditorPanel />
+                            <RailroadPanel />
                           </ResizablePanel>
-                          <ResizableHandle />
-                        </>
-                      )}
-
-                      {showParseTreePanel && (
-                        <>
-                          <ResizablePanel minSize={100}>
-                            {/* ParseTreePanel - not yet implemented */}
-                            <ParseTreePanel />
-                          </ResizablePanel>
-                          <ResizableHandle />
-                        </>
-                      )}
-
-                      {showRailroadPanel && (
-                        <ResizablePanel minSize={100}>
-                          <RailroadPanel />
-                        </ResizablePanel>
-                      )}
-
-                    </ResizablePanelGroup>
+                        )}
+                      </ResizablePanelGroup>
+                    </ErrorOverlayPanel>
                   </ResizablePanel>
                 </>
               )}
