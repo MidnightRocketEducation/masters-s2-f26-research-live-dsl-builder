@@ -5,6 +5,8 @@ import { EBNFEditor } from '@/components/editor/ebnf-editor'
 import { DSLEditorPanel } from '@/components/editor/dsl-editor-panel'
 import { RailroadPanel } from '@/components/railroad-panel'
 import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from '@/components/ui/resizable'
+import { ParseTreePanel } from './components/parse-tree-panel'
+import { ReferencePanel } from './components/reference-panel'
 
 function App() {
   const {
@@ -46,7 +48,7 @@ function App() {
                         <>
                           <ResizablePanel minSize={100}>
                             {/* ParseTreePanel - not yet implemented */}
-                            <></>
+                            <ParseTreePanel />
                           </ResizablePanel>
                           <ResizableHandle />
                         </>
@@ -68,8 +70,9 @@ function App() {
           {showReferencePanel && (
             <>
               <ResizableHandle />
-              <ResizablePanel minSize={200} className="flex">
+              <ResizablePanel minSize={200}>
                 {/* ReferencePanel - not yet implemented */}
+                <ReferencePanel />
               </ResizablePanel>
             </>
           )}
