@@ -8,6 +8,7 @@ export type RuleCategory =
   | "grouping"
   | "terminator"
   | "comment"
+  | "other"
 
 /* MonarchTokenizerRule describes how a rule is tokenized in the Monaco editor. It can be either:
 
@@ -194,7 +195,7 @@ export const RULES: Record<string, GrammarRule> = {
     id: "operator-exception",
     label: "- (exception)",
     description: "ISO EBNF exception: match left side unless it also matches right side. E.g. letter - 'q'",
-    category: "operator-combine",
+    category: "other",
     requiredInCategory: false,
     conflicts: [],
     tokenizer: { kind: "regex", regex: /-/, token: "bnf.exception", priority: 37 },
@@ -338,7 +339,7 @@ export const RULES: Record<string, GrammarRule> = {
 // Activating a preset replaces activeRuleIds entirely - conflict checking is
 // skipped because presets are guaranteed to be internally consistent.
 // -------------------------------------------------------------------------------
-export type PresetName = "BNF" | "EBNF-ISO" | "EBNF-W3C"
+export type PresetName = "BNF" | "EBNF-ISO" | "EBNF-W3C" | "Our Choice"
 
 export const PRESETS: Record<PresetName, string[]> = {
   // Classic Backus-Naur Form
@@ -382,6 +383,26 @@ export const PRESETS: Record<PresetName, string[]> = {
     "quantifier-question",
     "group-parens",
     "terminator-semicolon",
+  ],
+
+  // Our choice of rules we want to be available
+    "Our Choice": [
+    "terminal-string-double",
+    "terminal-string-single",
+    "terminal-charclass",
+    "nonterminal-angled",
+    "define-ebnf-iso",
+    "alternation-pipe",
+    "concat-implicit",
+    "repetition-braces",
+    "optional-brackets",
+    "quantifier-star",
+    "quantifier-plus",
+    "quantifier-question",
+    "group-parens",
+    "terminator-semicolon",
+    "comment-line",
+    "comment-block-parens",
   ]
 }
 
