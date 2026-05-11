@@ -389,7 +389,6 @@ export const PRESETS: Record<PresetName, string[]> = {
     "Our Choice": [
     "terminal-string-double",
     "terminal-string-single",
-    "terminal-charclass",
     "nonterminal-angled",
     "define-ebnf-iso",
     "alternation-pipe",
