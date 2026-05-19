@@ -189,17 +189,6 @@ export const RULES: Record<string, GrammarRule> = {
     conflicts: ["concat-implicit"],
     tokenizer: { kind: "regex", regex: /,/, token: "bnf.concat", priority: 35 },
   },
-  // --- Exception ---------------------------------------------------------------
-  // NOT required - exception operator is an optional extension.
-  "operator-exception": {
-    id: "operator-exception",
-    label: "- (exception)",
-    description: "ISO EBNF exception: match left side unless it also matches right side. E.g. letter - 'q'",
-    category: "other",
-    requiredInCategory: false,
-    conflicts: [],
-    tokenizer: { kind: "regex", regex: /-/, token: "bnf.exception", priority: 37 },
-  },
   // --- Quantifiers -------------------------------------------------------------
   // NOT required - a grammar without postfix quantifiers is valid.
   // All three can coexist; none conflict with each other.
@@ -330,6 +319,18 @@ export const RULES: Record<string, GrammarRule> = {
     requiredInCategory: false,
     conflicts: ["comment-block-parens"],
     tokenizer: { kind: "state", opener: /\/\*/, token: "bnf.comment", state: "blockComment" },
+  },
+
+  // --- Exception ---------------------------------------------------------------
+  // NOT required - exception operator is an optional extension.
+  "operator-exception": {
+    id: "operator-exception",
+    label: "- (exception)",
+    description: "ISO EBNF exception: match left side unless it also matches right side. E.g. letter - 'q'",
+    category: "other",
+    requiredInCategory: false,
+    conflicts: [],
+    tokenizer: { kind: "regex", regex: /-/, token: "bnf.exception", priority: 37 },
   },
 }
 

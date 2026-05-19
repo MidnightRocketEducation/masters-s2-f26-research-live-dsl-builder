@@ -21,6 +21,7 @@ const CATEGORY_LABELS: Record<RuleCategory, string> = {
   "grouping":            "Grouping",
   "terminator":          "Terminators",
   "comment":             "Comments",
+  "other":               "Other",
 }
 
 export function NavRules() {
