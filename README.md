@@ -1,63 +1,103 @@
+# Live DSL Builder
 
-# EBNF Live Parse Tree
+An interactive web-based grammar editor for designing, testing, and visualizing Domain-Specific Languages (DSLs) using EBNF (Extended Backus-Naur Form) notation.
 
-This is a live EBNF parser prototype: edit grammar text on the left and see a parse tree on the right. It provides immediate feedback and bidirectional interaction—click a tree node to highlight its source span in the editor.
+## What it does
 
-## How it works
+Live DSL Builder lets you:
 
-1. Monaco captures editor changes.
-2. RxJS debounces changes and triggers parsing.
-3. ANTLR (JS target) lexes/parses the EBNF text into a parse tree.
-4. The tree is mapped into a D3-friendly structure with token ranges.
-5. D3 renders a zoomable tree; clicking nodes highlights source ranges in Monaco.
+- Write grammar rules in multiple EBNF/BNF dialects
+- Toggle individual grammar rules on/off to customize the syntax
+- Validate test input against your grammar in real time
+- Auto-generate valid example strings from the grammar
+- Visualize grammar rules as interactive railroad diagrams (SVG)
 
-The tree can be toggled between a full parse tree and a compact view that collapses single-child rule nodes.
-
-## ANTLR grammar definition
-
-The grammar is defined in `grammar/EBNF.g4` and is now based on the [ANTLR grammars-v4 EBNF grammar](https://github.com/antlr/grammars-v4/blob/master/ebnf/bnf.g4):
-
-- **Rules**: Each rule describes a syntactic construct (e.g., `rule_`, `alternatives`, `element`).
-- **Tokens**: Terminals like `ID`, punctuation, and assignment are defined as lexer rules.
-- **Operators**: EBNF operators (`|`, `{}`, `[]`, `()`, `::=`) are handled as tokens and rule alternatives.
-- **Productions**: Rules can reference other rules, groupings, and options (parentheses, brackets, braces).
-- **Whitespace/comments**: Skipped via lexer rules (`WS`).
-
-This grammar is more comprehensive and compatible with standard EBNF, supporting a wider range of EBNF syntax and constructs.
-
-## Tool roles in this project
-
-- **Vite**: Dev server and bundler for fast reloads and production builds.
-- **Monaco Editor**: Code editor surface (syntax highlighting, selection, and decorations).
-- **ANTLR (JS target)**: EBNF lexer/parser generation; runtime creates parse trees.
-- **RxJS**: Liveness loop—streams editor changes, debounces, and triggers parsing.
-- **D3**: Tree layout and rendering; handles pan/zoom and node click interactions.
-- **EBNF.g4**: ANTLR grammar rules for EBNF, from their official repository; Enables meta-DSL.
+It supports three standard grammar dialects: **BNF**, **EBNF-ISO** (ISO 14977), and **EBNF-W3C**.
 
 ## Getting started
 
 ```bash
+cd live-dsl
 npm install
-```
-
-Generate the ANTLR parser (requires Java on PATH; the script auto-downloads the ANTLR jar):
-
-```bash
-npm run antlr
-```
-
-Start the dev server:
-
-```bash
 npm run dev
 ```
 
-## Files
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server with hot reload |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run ESLint |
 
-- `grammar/EBNF.g4`: EBNF grammar from the offial ANTLR repo
-- `scripts/antlr.js`: downloads and runs the ANTLR tool
-- `src/parser.js`: ANTLR parse pipeline and tree extraction (compact toggle)
-- `src/visual.js`: D3 tree layout renderer with zoom/pan
-- `src/editor.js`: Monaco editor setup + highlighting
-- `src/stream.js`: RxJS debounced parse stream
-- `src/main.js`: wiring of editor, parser, and visualization
+## Features
+
+### Grammar / EBNF editor
+Write EBNF grammar rules in a Monaco-powered editor with syntax highlighting that adapts to whichever dialect rules are active.
+
+### Rule toggling
+The sidebar exposes 23 grammar rules across 9 categories. Toggle them individually to define the exact syntax your DSL supports:
+
+| Category | Controls |
+|---|---|
+| Terminals | String literal style (`"..."`, `'...'`, `[a-z]`) |
+| Nonterminals | Reference style (`<name>` vs bare `name`) |
+| Definition | Rule syntax (`::=`, `=`, `<-`) |
+| Alternation | Choice operator (`\|`, `/`, `or`) |
+| Concatenation | Sequence mode (implicit or explicit `,`) |
+| Quantifiers | Repetition (`*`, `+`, `?`) |
+| Grouping | Wrapping constructs (`{}`, `[]`, `()`) |
+| Terminators | Rule ending (`↵`, `;`, `.`) |
+| Comments | Comment styles (`//`, `/* */`, `(* *)`) |
+
+Conflicting rules auto-deactivate when toggled, and required categories always keep at least one rule active.
+
+### DSL editor
+Test input against your grammar. Errors are shown as inline squiggles with an error count in the panel header. Choose which grammar rule to validate against, or use the auto-detect mode.
+
+### Railroad diagrams
+Each grammar rule renders as an SVG railroad diagram. Clicking / hovering an element in the diagram highlights the corresponding source range in the EBNF editor.
+
+### Generate
+Click **Generate** to produce a random valid string from the grammar, or enable **Auto-generate** to regenerate automatically when you switch and change rules.
+
+## Tech stack
+
+- **React 19** + **TypeScript 5.9** - UI framework
+- **Vite 7** - build tool
+- **Monaco Editor** - embedded editor with syntax highlighting
+- **Chevrotain** - parser library (lexer + parser for EBNF)
+- **Railroad Diagrams** - SVG railroad diagram generation
+- **Zustand** - state management
+- **Tailwind CSS 4** + **shadcn/ui** - styling and components
+
+## Project structure
+
+```
+live-dsl/src/
+├── app/
+│   └── store.ts              # Zustand store - all app state and actions
+├── components/
+│   ├── editor/
+│   │   ├── ebnf-editor.tsx   # EBNF grammar editor
+│   │   ├── dsl-editor-panel.tsx  # DSL test input editor
+│   │   └── language/         # Monaco tokenizers and themes
+│   ├── railroad-panel.tsx    # Railroad diagram panel
+│   ├── AppSidebar.tsx        # Sidebar with rule toggles and presets
+│   └── SiteHeader.tsx        # Header with panel visibility controls
+├── grammar/
+│   ├── rules.ts              # Rule definitions and preset configurations
+│   ├── ebnf/                 # EBNF lexer, parser (Chevrotain), and AST builder
+│   ├── dsl/                  # DSL tokenizer, validator, and string generator
+│   └── visualization/        # AST-to-railroad-diagram converter
+└── App.tsx                   # Root layout with resizable panels
+```
+
+## Status
+
+This is a research project. The following features are currently placeholders:
+
+- Parse Tree panel
+- Reference panel
+- Save & Share URL
+- Code examples list
+- Export as files

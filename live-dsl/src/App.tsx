@@ -1,0 +1,88 @@
+import './App.css'
+import { useAppStore } from '@/app/store'
+import Layout from './components/Layout'
+import { EBNFEditor } from '@/components/editor/ebnf-editor'
+import { DSLEditorPanel } from '@/components/editor/dsl-editor-panel'
+import { RailroadPanel } from '@/components/railroad-panel'
+import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from '@/components/ui/resizable'
+import { ParseTreePanel } from './components/parse-tree-panel'
+import { ReferencePanel } from './components/reference-panel'
+import { ErrorOverlayPanel } from './components/error-overlay-panel'
+
+function App() {
+  const {
+    showReferencePanel,
+    showSecondEditorPanel,
+    showParseTreePanel,
+    showRailroadPanel,
+    isParseResultMatching,
+    setParseResultMismatchOverlay,
+    showParseResultMismatchOverlay,
+  } = useAppStore()
+
+  const showRightPanel = showSecondEditorPanel || showParseTreePanel || showRailroadPanel
+
+
+  return (
+    <Layout>
+      <main className="flex flex-1 flex-row">
+        <ResizablePanelGroup orientation="vertical" className="flex-1">
+          <ResizablePanel minSize={200}>
+            <ResizablePanelGroup orientation="horizontal" className="flex-1">
+              <ResizablePanel minSize={300}>
+                <EBNFEditor />
+              </ResizablePanel>
+              {showRightPanel && (
+                <>
+                  <ResizableHandle withHandle className="z-10" />
+                  <ResizablePanel minSize={350}>
+                    <ErrorOverlayPanel label="Grammar mismatch" visible={!isParseResultMatching && showParseResultMismatchOverlay} onDismiss={() => setParseResultMismatchOverlay(false)}>
+                      <ResizablePanelGroup orientation="vertical" className="flex-1">
+                        {showSecondEditorPanel && (
+                          <>
+                            <ResizablePanel minSize={100}>
+                              <DSLEditorPanel />
+                            </ResizablePanel>
+                            <ResizableHandle />
+                          </>
+                        )}
+
+                        {showParseTreePanel && (
+                          <>
+                            <ResizablePanel minSize={100}>
+                              {/* ParseTreePanel - not yet implemented */}
+                              <ParseTreePanel />
+                            </ResizablePanel>
+                            <ResizableHandle />
+                          </>
+                        )}
+
+                        {showRailroadPanel && (
+                          <ResizablePanel minSize={100}>
+                            <RailroadPanel />
+                          </ResizablePanel>
+                        )}
+                      </ResizablePanelGroup>
+                    </ErrorOverlayPanel>
+                  </ResizablePanel>
+                </>
+              )}
+            </ResizablePanelGroup>
+          </ResizablePanel>
+
+          {showReferencePanel && (
+            <>
+              <ResizableHandle />
+              <ResizablePanel minSize={200}>
+                {/* ReferencePanel - not yet implemented */}
+                <ReferencePanel />
+              </ResizablePanel>
+            </>
+          )}
+        </ResizablePanelGroup>
+      </main>
+    </Layout>
+  )
+}
+
+export default App

@@ -2,12 +2,7 @@ name: Deploy React App to GitHub Pages
 
 on:
   release:
-    types: [published]  # Trigger the workflow when a new release is published
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    types: [released]
 
 jobs:
   # Build job
@@ -16,19 +11,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest release
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.release.tag_name }}
-
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '25'
-
+          node-version: 25
+          cache-dependency-path: live-dsl/package-lock.json
+      - name: Debug
+        run: |
+          node --version
+          npm --version
+          git show -s
       - name: Install dependencies
         working-directory: live-dsl
-        run: npm install
+        run: |
+          npm install || { ls -lha "$HOME/.npm/_logs" && cat $HOME/.npm/_logs/*.log && exit 1; }
 
       - name: Build static files
         id: build
@@ -37,12 +35,16 @@ jobs:
 
       - name: Upload static files as artifact
         id: deployment
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: live-dsl/dist/
 
   # Deployment job
   deploy:
+    permissions:
+      pages: write
+      id-token: write
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -51,4 +53,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
